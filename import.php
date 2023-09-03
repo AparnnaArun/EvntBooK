@@ -20,7 +20,9 @@ require_once 'config.php';
     $chunkSize = 1000;
     
     // Insert JSON data in chunks
+    
     $chunks = array_chunk($data, $chunkSize);
+
    // Insert jason data to db
  foreach ($chunks as $chunk) {
         $pdo->beginTransaction();
@@ -52,7 +54,7 @@ foreach ($chunk as $item) {
     $stmt->execute();
 
     $employee_id = $pdo->lastInsertId(); // Get the employee_id
-    
+
 
   $stmt = $pdo->prepare("
     INSERT INTO events (event_id, event_name)

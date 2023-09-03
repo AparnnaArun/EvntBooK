@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-         // Handle filter conditions (customize as needed)
+         //  filter conditions
         $conditions = [];
         $params = [];
 
@@ -83,7 +83,7 @@ require_once 'config.php';
      
 if(isset($_SESSION['status'])){?>
     <div class="alert alert-success" role="alert">
-<?php echo htmlentities($_SESSION['status'], ENT_QUOTES, 'UTF-8'); // stored with html entities 
+<?php echo htmlentities($_SESSION['status'], ENT_QUOTES, 'UTF-8'); // echoed with html entities 
 
 unset ($_SESSION['status']);
 ?>
@@ -108,8 +108,8 @@ unset ($_SESSION['failed']);
     <table  class='table table-striped'>
        <thead>
     <tr>
-        <th scope='col'>#</th>
-          <th scope='col'>Employee</th>
+      <th scope='col'>#</th>
+      <th scope='col'>Employee</th>
       <th scope='col'>Event</th>
       <th scope='col'>Date</th>
       <th scope='col'>Fee</th>
