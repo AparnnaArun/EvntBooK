@@ -1,8 +1,11 @@
-        <!DOCTYPE html>
+<?php
+session_start();
+?>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Booking System</title>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -11,6 +14,7 @@
 <body>
     <div class="container">
     <h1>Booking System</h1>
+
     <div class="row">
 
  <form id="filter-form" method="GET">
@@ -23,29 +27,39 @@
       <input type="text" class="form-control" placeholder="Event Name" id="event_name" name="event_name">
          
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <input type="text" class="form-control datepicker" placeholder="Date" id="booking_date" name="booking_date" >
          
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <button type="submit" value="" class="btn btn-primary">Filter</button>
+         
+    </div>
+      <div class="col-md-2">
+        <a href="import.php"  class="btn btn-primary">Read JSON File</a>
          
     </div>
   </div>
 </form>
 </div>
-<!-- <div class="row">
+
+<div class="row mt-3 mb-3">
+    <div class="col-md-12 mt-3">
+        <?php
      
- <form method="POST" enctype="multipart/form-data" action="import.php">
-    <div class="col-md-3">
-        <label for="jsonFile">Upload JSON File:</label>
-        <input type="file" name="jsonFile" id="jsonFile">
-    </div>
-    <div class="col-md-3 mt-3">
-        <input type="submit" name="submit" value="Import JSON">
-    </div>
-    </form>
-</div> -->
+if(isset($_SESSION['status'])){
+  echo $_SESSION['status'];
+unset ($_SESSION['status']);
+}
+
+ if(isset($_SESSION['failed'])){
+  echo $_SESSION['failed'];
+unset ($_SESSION['failed']);
+}
+ ?>
+
+</div>
+</div>
 
    <div class="row mt-3">
     <table  class='table table-striped'>
@@ -123,7 +137,20 @@ try {
 catch (PDOException $e) {
  echo "Error: " . htmlentities($e->getMessage(), ENT_QUOTES, 'UTF-8');
 
-    exit(); // Exit 
+    exit(); 
 }?>
+</div>
+</div>
 </body>
+   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script type="text/javascript">
+   
+
+            // JQuery datepicker
+      $( function() {
+    $( ".datepicker" ).datepicker(
+        { dateFormat: 'yy-mm-dd' });
+  } );
+  </script>
 </html>

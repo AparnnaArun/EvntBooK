@@ -1,5 +1,6 @@
 <?php
-// Database connection parameters
+session_start();
+// Database connection 
 $host = 'localhost';
 $dbname = 'booking';
 $username = 'root';
@@ -10,14 +11,19 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Read and process the JSON file
+    // Read  the JSON file
     $json_data = file_get_contents('C:/xampp/htdocs/booking/Code Challenge (Events).json');
 
     $data = json_decode($json_data, true);
 
+    $chunkSize = 1000;
+    
+    // Insert JSON data in chunks
+    $chunks = array_chunk($data, $chunkSize);
    // Insert jason data to db
-
-foreach ($data as $item) {
+ foreach ($chunks as $chunk) {
+        $pdo->beginTransaction();
+foreach ($chunk as $item) {
     if (isset($item['version'])) {
     $employee_name = $item['employee_name'];
     $employee_mail = $item['employee_mail'];
@@ -51,7 +57,7 @@ foreach ($data as $item) {
 
     $event_id = $pdo->lastInsertId(); // Get the event_id
 
-    // Insert booking
+    // Insert booking details
     $stmt = $pdo->prepare("
         INSERT INTO bookings (employee_id, event_id, booking_date, booking_price,participation_id,version)
         VALUES (:employee_id, :event_id, :booking_date, :booking_price,:participation_id,:version)
@@ -114,26 +120,31 @@ foreach ($data as $item) {
     
     $stmt->execute();
 }
-
-echo htmlentities("Data imported successfully.", ENT_QUOTES, 'UTF-8');
-
-//header('location:index1.php');
-} catch (PDOException $e) {
-    echo "Error: " . htmlentities($e->getMessage(), ENT_QUOTES, 'UTF-8');
-
-}
-
-// Function to get or create records to db
-function getOrCreate($pdo, $table, $column, $value, $insertStatement) {
-    $stmt = $pdo->prepare("SELECT * FROM $table WHERE $column = :value");
-    $stmt->execute([':value' => $value]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$result) {
-        $insertStatement->execute([':' . $column => $value]);
-        return $pdo->lastInsertId();
-    } else {
-        return $result['id'];
+ 
+        $pdo->commit();
     }
+//echo htmlentities("Data imported successfully.", ENT_QUOTES, 'UTF-8');
+$_SESSION['status'] = '<div class="alert alert-success" role="alert">Data imported successfully.</div>';
+
+header('location:index1.php');
+} catch (PDOException $e) {
+    //echo "Error: " . htmlentities($e->getMessage(), ENT_QUOTES, 'UTF-8');
+   $_SESSION['failed'] = '<div class="alert alert-danger" role="alert">' . $e->getMessage() . '</div>';
+
 }
+
+// create records to db
+function getOrCreate($pdo, $table, $column, $value) {
+    $insertStatement = $pdo->prepare("
+        INSERT INTO $table ($column)
+        VALUES (:value)
+        ON DUPLICATE KEY UPDATE $column = :value
+    ");
+
+    $insertStatement->bindParam(':value', $value);
+    $insertStatement->execute();
+
+    return $pdo->lastInsertId();
+}
+
 ?>
