@@ -111,7 +111,7 @@ unset ($_SESSION['failed']);
     $serialNumber = 1; 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>";
-   echo "<td>" . $serialNumber . "</td>";
+    echo "<td>" . htmlentities($serialNumber) . "</td>";
     echo "<td>" . htmlentities($row['employee_name']) . "</td>";
     echo "<td>" . htmlentities($row['event_name']) . "</td>";
     echo "<td>" . htmlentities($row['booking_date']) . "</td>";
