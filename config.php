@@ -12,4 +12,6 @@ try {
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
 }
+// json file
+define('JSON_FILE_PATH', 'C:/xampp/htdocs/EvntBooK/EvntBooK/Code Challenge (Events).json');
 ?>

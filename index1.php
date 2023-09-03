@@ -21,10 +21,10 @@ require_once 'config.php';
             $params[':booking_date'] = $_GET['booking_date'];
         }
 
-        // Join 3 tables
+        // Joins 3 tables
         $sql = "SELECT e.employee_name, ev.event_name, b.booking_date, b.booking_price 
-                FROM bookings b JOIN employees e ON b.employee_id = e.employee_id
-                JOIN events ev ON b.event_id = ev.event_id";
+                FROM bookings b INNER JOIN employees e ON b.employee_id = e.employee_id
+                INNER JOIN events ev ON b.event_id = ev.event_id";
 
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
@@ -81,15 +81,24 @@ require_once 'config.php';
     <div class="col-md-12 mt-3">
         <?php
      
-if(isset($_SESSION['status'])){
-  echo htmlspecialchars_decode(htmlentities($_SESSION['status']));
-unset ($_SESSION['status']);
-}
+if(isset($_SESSION['status'])){?>
+    <div class="alert alert-success" role="alert">
+<?php echo htmlentities($_SESSION['status'], ENT_QUOTES, 'UTF-8'); // stored with html entities 
 
- if(isset($_SESSION['failed'])){
-  echo htmlspecialchars_decode(htmlentities($_SESSION['failed']));
+unset ($_SESSION['status']);
+?>
+</div>
+
+<?php }
+
+ if(isset($_SESSION['failed'])){?>
+     <div class="alert alert-danger" role="alert">
+ <?php  echo htmlentities($_SESSION['status'], ENT_QUOTES, 'UTF-8');
+
 unset ($_SESSION['failed']);
-}
+?>
+</div>
+</div><?php }
  ?>
 
 </div>
