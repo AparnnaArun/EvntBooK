@@ -28,11 +28,7 @@ foreach ($chunk as $item) {
 
 
     // Insert or update employee and event in the db
-    // $stmt = $pdo->prepare("
-    //     INSERT INTO employees (employee_name,employee_mail)
-    //     VALUES (:employee_name,:employee_mail)
-    //     ON DUPLICATE KEY UPDATE employee_id = LAST_INSERT_ID(employee_id)
-    // ");
+   
     $stmt = $pdo->prepare("
     INSERT INTO employees (employee_name, employee_mail, employee_id)
     VALUES (:employee_name, :employee_mail, LAST_INSERT_ID(employee_id))

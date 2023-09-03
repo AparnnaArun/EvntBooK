@@ -99,6 +99,7 @@ unset ($_SESSION['failed']);
     <table  class='table table-striped'>
        <thead>
     <tr>
+        <th scope='col'>#</th>
           <th scope='col'>Employee</th>
       <th scope='col'>Event</th>
       <th scope='col'>Date</th>
@@ -107,19 +108,22 @@ unset ($_SESSION['failed']);
   </thead>
 <tbody>
     <?php
+    $serialNumber = 1; 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>";
+   echo "<td>" . $serialNumber . "</td>";
     echo "<td>" . htmlentities($row['employee_name']) . "</td>";
     echo "<td>" . htmlentities($row['event_name']) . "</td>";
     echo "<td>" . htmlentities($row['booking_date']) . "</td>";
     echo "<td>" . htmlentities($row['booking_price']) . "</td>";
             echo "</tr>";
+             $serialNumber++;
              $totalPrice += $row['booking_price'];
         }
         ?>
      
         <tr>
-            <td colspan="3"><b>Total Price</b></td>
+            <td colspan="4"><b>Total Price</b></td>
           <td><b><?php echo htmlentities($totalPrice); ?></b></td>
 
         </tr>
