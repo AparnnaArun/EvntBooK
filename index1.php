@@ -1,10 +1,44 @@
 <?php
 session_start();
+require_once 'config.php';
+
+         // Handle filter conditions (customize as needed)
+        $conditions = [];
+        $params = [];
+
+        if (!empty($_GET['employee_name'])) {
+            $conditions[] = 'e.employee_name LIKE :employee_name';
+            $params[':employee_name'] = '%' . $_GET['employee_name'] . '%';
+        }
+
+        if (!empty($_GET['event_name'])) {
+            $conditions[] = 'ev.event_name LIKE :event_name';
+            $params[':event_name'] = '%' . $_GET['event_name'] . '%';
+        }
+
+        if (!empty($_GET['booking_date'])) {
+            $conditions[] = 'b.booking_date = :booking_date';
+            $params[':booking_date'] = $_GET['booking_date'];
+        }
+
+        // Join 3 tables
+        $sql = "SELECT e.employee_name, ev.event_name, b.booking_date, b.booking_price 
+                FROM bookings b JOIN employees e ON b.employee_id = e.employee_id
+                JOIN events ev ON b.event_id = ev.event_id";
+
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        // Execute the query and display results
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $totalPrice = 0;
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Booking System</title>
+  <title>Booking System</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -48,12 +82,12 @@ session_start();
         <?php
      
 if(isset($_SESSION['status'])){
-  echo $_SESSION['status'];
+  echo htmlspecialchars_decode(htmlentities($_SESSION['status']));
 unset ($_SESSION['status']);
 }
 
  if(isset($_SESSION['failed'])){
-  echo $_SESSION['failed'];
+  echo htmlspecialchars_decode(htmlentities($_SESSION['failed']));
 unset ($_SESSION['failed']);
 }
  ?>
@@ -72,49 +106,7 @@ unset ($_SESSION['failed']);
     </tr>
   </thead>
 <tbody>
-        <?php
-          
-$host = 'localhost';
-$dbname = 'booking';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-         // Handle filter conditions (customize as needed)
-        $conditions = [];
-        $params = [];
-
-        if (!empty($_GET['employee_name'])) {
-            $conditions[] = 'e.employee_name LIKE :employee_name';
-            $params[':employee_name'] = '%' . $_GET['employee_name'] . '%';
-        }
-
-        if (!empty($_GET['event_name'])) {
-            $conditions[] = 'ev.event_name LIKE :event_name';
-            $params[':event_name'] = '%' . $_GET['event_name'] . '%';
-        }
-
-        if (!empty($_GET['booking_date'])) {
-            $conditions[] = 'b.booking_date = :booking_date';
-            $params[':booking_date'] = $_GET['booking_date'];
-        }
-
-        // Join 3 tables
-        $sql = "SELECT e.employee_name, ev.event_name, b.booking_date, b.booking_price 
-                FROM bookings b JOIN employees e ON b.employee_id = e.employee_id
-                JOIN events ev ON b.event_id = ev.event_id";
-
-        if (!empty($conditions)) {
-            $sql .= " WHERE " . implode(" AND ", $conditions);
-        }
-
-        // Execute the query and display results
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $totalPrice = 0;
+    <?php
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>";
     echo "<td>" . htmlentities($row['employee_name']) . "</td>";
@@ -133,12 +125,7 @@ try {
         </tr>
     </tbody>
     </table>
-<?php } 
-catch (PDOException $e) {
- echo "Error: " . htmlentities($e->getMessage(), ENT_QUOTES, 'UTF-8');
 
-    exit(); 
-}?>
 </div>
 </div>
 </body>

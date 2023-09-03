@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 03, 2023 at 08:41 AM
+-- Generation Time: Sep 03, 2023 at 04:10 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -57,8 +57,7 @@ CREATE TABLE `employees` (
 
 CREATE TABLE `events` (
   `event_id` int(11) NOT NULL,
-  `event_name` varchar(255) DEFAULT NULL,
-  `event_date` date DEFAULT NULL
+  `event_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -70,6 +69,7 @@ CREATE TABLE `events` (
 --
 ALTER TABLE `bookings`
   ADD PRIMARY KEY (`booking_id`),
+  ADD UNIQUE KEY `uq_participation_id` (`participation_id`),
   ADD KEY `employee_id` (`employee_id`),
   ADD KEY `event_id` (`event_id`);
 
@@ -77,7 +77,8 @@ ALTER TABLE `bookings`
 -- Indexes for table `employees`
 --
 ALTER TABLE `employees`
-  ADD PRIMARY KEY (`employee_id`);
+  ADD PRIMARY KEY (`employee_id`),
+  ADD UNIQUE KEY `uq_employee_mail` (`employee_mail`);
 
 --
 -- Indexes for table `events`
@@ -99,13 +100,13 @@ ALTER TABLE `bookings`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=258;
+  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=514;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=255;
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2020;
 
 --
 -- Constraints for dumped tables
